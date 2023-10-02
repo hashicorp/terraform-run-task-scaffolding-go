@@ -15,7 +15,7 @@ import (
 	tfjson "github.com/hashicorp/terraform-json"
 
 	"terraform-run-task-scaffolding-go/internal/sdk/api"
-	handler2 "terraform-run-task-scaffolding-go/internal/sdk/handler"
+	"terraform-run-task-scaffolding-go/internal/sdk/handler"
 )
 
 func HandleRequests(task *ScaffoldingRunTask) {
@@ -31,7 +31,7 @@ func HandleRequests(task *ScaffoldingRunTask) {
 	}
 }
 
-func HandleTFCRequestWrapper(task *ScaffoldingRunTask, original func(http.ResponseWriter, *http.Request, api.Request, *ScaffoldingRunTask, *handler2.CallbackBuilder)) func(http.ResponseWriter, *http.Request) {
+func HandleTFCRequestWrapper(task *ScaffoldingRunTask, original func(http.ResponseWriter, *http.Request, api.Request, *ScaffoldingRunTask, *handler.CallbackBuilder)) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		// Parse request
@@ -48,7 +48,7 @@ func HandleTFCRequestWrapper(task *ScaffoldingRunTask, original func(http.Respon
 			return
 		}
 
-		requestSha := r.Header.Get(handler2.HeaderTaskSignature)
+		requestSha := r.Header.Get(handler.HeaderTaskSignature)
 
 		if requestSha != "" && task.config.HmacKey == "" {
 			task.logger.Printf("Received a request for %s with a signature but this server cannot validate signed requests\n", r.URL)
@@ -64,7 +64,7 @@ func HandleTFCRequestWrapper(task *ScaffoldingRunTask, original func(http.Respon
 
 		if requestSha != "" {
 			// Calculate expected HMAC
-			verified, err := handler2.VerifyHMAC(reqBody, []byte(r.Header.Get(handler2.HeaderTaskSignature)), []byte(task.config.HmacKey))
+			verified, err := handler.VerifyHMAC(reqBody, []byte(r.Header.Get(handler.HeaderTaskSignature)), []byte(task.config.HmacKey))
 
 			if err != nil {
 				task.logger.Println("Unable to verify given HMAC key")
@@ -118,9 +118,9 @@ func HandleTFCRequestWrapper(task *ScaffoldingRunTask, original func(http.Respon
 	}
 }
 
-func SendTFCCallbackResponse() func(w http.ResponseWriter, r *http.Request, reqBody api.Request, task *ScaffoldingRunTask, cbBuilder *handler2.CallbackBuilder) {
+func SendTFCCallbackResponse() func(w http.ResponseWriter, r *http.Request, reqBody api.Request, task *ScaffoldingRunTask, cbBuilder *handler.CallbackBuilder) {
 
-	return func(w http.ResponseWriter, r *http.Request, reqBody api.Request, task *ScaffoldingRunTask, cbBuilder *handler2.CallbackBuilder) {
+	return func(w http.ResponseWriter, r *http.Request, reqBody api.Request, task *ScaffoldingRunTask, cbBuilder *handler.CallbackBuilder) {
 
 		respBody, err := cbBuilder.MarshallJSON()
 		if err != nil {
