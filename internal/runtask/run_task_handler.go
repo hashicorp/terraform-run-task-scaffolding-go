@@ -49,12 +49,14 @@ func HandleTFCRequestWrapper(task *ScaffoldingRunTask, original func(http.Respon
 		var runTaskReq api.Request
 		reqBody, err := io.ReadAll(r.Body)
 		if err != nil {
+			task.logger.Println("Error occurred while parsing the request")
 			http.Error(w, "Bad Request", http.StatusBadRequest)
 			return
 		}
 
 		err = json.Unmarshal(reqBody, &runTaskReq)
 		if err != nil {
+			task.logger.Println("Error occurred while parsing the request")
 			http.Error(w, "Bad Request", http.StatusBadRequest)
 			return
 		}
@@ -98,12 +100,14 @@ func HandleTFCRequestWrapper(task *ScaffoldingRunTask, original func(http.Respon
 
 		callbackResp, err := task.VerifyRequest(runTaskReq)
 		if err != nil {
+			task.logger.Println("Error occurred during run task request verification")
 			http.Error(w, "Error during run task request verification:"+err.Error(), http.StatusInternalServerError)
 			return
 		}
 
 		// Send response to TFC and exit early
 		if callbackResp != nil {
+			task.logger.Println("Error occurred while parsing the request")
 			original(w, r, runTaskReq, task, callbackResp)
 			return
 		}
@@ -113,6 +117,7 @@ func HandleTFCRequestWrapper(task *ScaffoldingRunTask, original func(http.Respon
 			plan, err := RetrieveTFCPlan(runTaskReq)
 
 			if err != nil {
+				task.logger.Println("Error occurred while retrieving plan from TFC")
 				http.Error(w, "Bad Request: "+err.Error(), http.StatusNotFound)
 				return
 			}
@@ -120,6 +125,7 @@ func HandleTFCRequestWrapper(task *ScaffoldingRunTask, original func(http.Respon
 
 			callbackResp, err = task.VerifyPlan(runTaskReq, plan)
 			if err != nil {
+				task.logger.Println("Error occurred while verifying plan")
 				http.Error(w, "Error verifying plan:"+err.Error(), http.StatusInternalServerError)
 				return
 			}
@@ -135,6 +141,7 @@ func SendTFCCallbackResponse() func(w http.ResponseWriter, r *http.Request, reqB
 
 		respBody, err := cbBuilder.MarshallJSON()
 		if err != nil {
+			task.logger.Println("Unable to marshall callback response to TFC")
 			http.Error(w, "Bad Request", http.StatusBadRequest)
 			return
 		}
@@ -145,6 +152,7 @@ func SendTFCCallbackResponse() func(w http.ResponseWriter, r *http.Request, reqB
 			_ = r.Body.Close()
 		}
 		if err != nil {
+			task.logger.Println("Error occurred while sending the callback response to TFC")
 			http.Error(w, "Bad Request:"+err.Error(), http.StatusNotFound)
 			return
 		}
