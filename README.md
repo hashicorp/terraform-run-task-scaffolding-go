@@ -17,24 +17,27 @@ Please see the [GitHub template repository documentation](https://help.github.co
 - [Go](https://golang.org/doc/install) >= 1.20
 
 ## Using The Run Task in TFC/E
-_We highly recommend using a service like [ngrok](https://ngrok.com/) to quickly test your run task without a full cloud deployment_
+_We highly recommend using a tunneling solution like [ngrok](https://ngrok.com/) to quickly test your run task on your local machine._
 
-1. Run the run task using the Go `run` command:
+1. Run the run task service using the Go `run` command:
 
-```shell
-go run main.go
-```
+    ```shell
+    go run main.go
+    ```
 
+   - Alternatively, you can run the service in debug mode with breakpoints using a debugger or an IDE
 2. Take note of the `path`, `hmac`, and `addr` values configured in `internal/runtask/run_task_scaffolding.Configure()`
     - Default values: `path` = `/runtask`, `hmac` = `secret123`, `addr` = `:22180`
 
-3. Verify that the run task is running by calling the `/healthcheck` endpoint: 
+3. (Optional) If you are using a tunneling solution, run and configure it to use the same port (`addr` value) that the run task service is running on.
 
-```shell
-curl -v -d '{...}' -H "Content-Type: application/json" localhost:22180/healthcheck
-```
+3. Verify that the run task service is running by calling the `/healthcheck` endpoint: 
 
-4. Follow the steps on the Hashicorp Developer platform for [Creating a Run Task](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-tasks#creating-a-run-task) and [Associating Run Tasks with a Workspace](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-tasks#associating-run-tasks-with-a-workspace)
+    ```shell
+    curl -v -d '{...}' -H "Content-Type: application/json" <Service URL>/healthcheck
+    ```
+
+5. Follow the steps on the Hashicorp Developer platform for [Creating a Run Task](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-tasks#creating-a-run-task) and [Associating Run Tasks with a Workspace](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-tasks#associating-run-tasks-with-a-workspace)
    - For the **Endpoint URL** field, append the `path` value to the end of your service's URL, ex: `http://myservice.io/runtask`
    - For the **HMAC key** field, use the configured `hmac` value 
 
