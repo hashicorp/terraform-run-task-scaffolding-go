@@ -24,9 +24,17 @@ _We highly recommend using a service like [ngrok](https://ngrok.com/) to quickly
 ```shell
 go run main.go
 ```
-2. Take note of the `path`, and `hmac` values configured in `internal/runtask/run_task_scaffolding.Configure()`
-   - Default values: `path` = `/runtask`, and `hmac` = `secret123`
-3. Follow the steps on the Hashicorp Developer platform for [Creating a Run Task](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-tasks#creating-a-run-task) and [Associating Run Tasks with a Workspace](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-tasks#associating-run-tasks-with-a-workspace)
+
+2. Take note of the `path`, `hmac`, and `addr` values configured in `internal/runtask/run_task_scaffolding.Configure()`
+    - Default values: `path` = `/runtask`, `hmac` = `secret123`, `addr` = `:22180`
+
+3. Verify that the run task is running by calling the `/healthcheck` endpoint: 
+
+```shell
+curl -v -d '{...}' -H "Content-Type: application/json" localhost:22180/healthcheck
+```
+
+4. Follow the steps on the Hashicorp Developer platform for [Creating a Run Task](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-tasks#creating-a-run-task) and [Associating Run Tasks with a Workspace](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-tasks#associating-run-tasks-with-a-workspace)
    - For the **Endpoint URL** field, append the `path` value to the end of your service's URL, ex: `http://myservice.io/runtask`
    - For the **HMAC key** field, use the configured `hmac` value 
 

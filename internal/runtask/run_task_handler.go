@@ -21,8 +21,18 @@ import (
 func HandleRequests(task *ScaffoldingRunTask) {
 	r := mux.NewRouter()
 
-	task.logger.Println("Registering run task routes")
+	task.logger.Println("Registering " + task.config.Path + " route")
 	r.HandleFunc(task.config.Path, HandleTFCRequestWrapper(task, SendTFCCallbackResponse())).Methods(http.MethodPost)
+
+	task.logger.Println("Registering /healthcheck route")
+	r.HandleFunc("/healthcheck", func(w http.ResponseWriter, r *http.Request) {
+		task.logger.Println("/healthcheck called")
+		w.WriteHeader(http.StatusOK)
+		err := json.NewEncoder(w).Encode(map[string]string{"status": "available"})
+		if err != nil {
+			return
+		}
+	}).Methods(http.MethodGet)
 
 	task.logger.Printf("Starting server on port %s", task.config.Addr)
 	err := http.ListenAndServe(task.config.Addr, r)
@@ -33,6 +43,7 @@ func HandleRequests(task *ScaffoldingRunTask) {
 
 func HandleTFCRequestWrapper(task *ScaffoldingRunTask, original func(http.ResponseWriter, *http.Request, api.Request, *ScaffoldingRunTask, *handler.CallbackBuilder)) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		task.logger.Println(task.config.Path + " called")
 
 		// Parse request
 		var runTaskReq api.Request
