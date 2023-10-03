@@ -9,9 +9,9 @@ import (
 
 	tfjson "github.com/hashicorp/terraform-json"
 
-	"terraform-run-task-scaffolding-go/internal/sdk/api"
+	"github.com/hashicorp/terraform-run-task-scaffolding-go/internal/sdk/api"
 
-	"terraform-run-task-scaffolding-go/internal/sdk/handler"
+	"github.com/hashicorp/terraform-run-task-scaffolding-go/internal/sdk/handler"
 )
 
 const (

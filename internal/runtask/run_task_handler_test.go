@@ -12,7 +12,7 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"terraform-run-task-scaffolding-go/internal/sdk/api"
+	"github.com/hashicorp/terraform-run-task-scaffolding-go/internal/sdk/api"
 )
 
 func Test_runTask_handler(t *testing.T) {
@@ -67,7 +67,7 @@ func CreateMockService(task *ScaffoldingRunTask) *mux.Router {
 
 	router := mux.NewRouter()
 
-	router.HandleFunc("/test", HandleTFCRequestWrapper(task, SendTFCCallbackResponse())).Methods(http.MethodPost)
+	router.HandleFunc("/test", handleTFCRequestWrapper(task, sendTFCCallbackResponse())).Methods(http.MethodPost)
 
 	return router
 }

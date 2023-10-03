@@ -1,9 +1,10 @@
-module terraform-run-task-scaffolding-go
+module github.com/hashicorp/terraform-run-task-scaffolding-go
 
 go 1.20
 
 require (
 	github.com/gorilla/mux v1.8.0
+	github.com/hashicorp/copywrite v0.16.5
 	github.com/hashicorp/terraform-json v0.17.1
 )
 
@@ -27,7 +28,6 @@ require (
 	github.com/google/go-github/v45 v45.2.0 // indirect
 	github.com/google/go-github/v53 v53.0.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
-	github.com/hashicorp/copywrite v0.16.5 // indirect
 	github.com/hashicorp/go-hclog v1.5.0 // indirect
 	github.com/hashicorp/go-version v1.6.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
@@ -51,6 +51,7 @@ require (
 	github.com/muesli/termenv v0.12.0 // indirect
 	github.com/oklog/ulid v1.3.1 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
+	github.com/rogpeppe/go-internal v1.11.0 // indirect
 	github.com/samber/lo v1.37.0 // indirect
 	github.com/spf13/cobra v1.6.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect

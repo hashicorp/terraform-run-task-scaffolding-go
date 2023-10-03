@@ -4,7 +4,7 @@
 package main
 
 import (
-	"terraform-run-task-scaffolding-go/internal/runtask"
+	"github.com/hashicorp/terraform-run-task-scaffolding-go/internal/runtask"
 )
 
 func main() {

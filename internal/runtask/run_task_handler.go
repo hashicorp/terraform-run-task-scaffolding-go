@@ -14,15 +14,15 @@ import (
 	"github.com/gorilla/mux"
 	tfjson "github.com/hashicorp/terraform-json"
 
-	"terraform-run-task-scaffolding-go/internal/sdk/api"
-	"terraform-run-task-scaffolding-go/internal/sdk/handler"
+	"github.com/hashicorp/terraform-run-task-scaffolding-go/internal/sdk/api"
+	"github.com/hashicorp/terraform-run-task-scaffolding-go/internal/sdk/handler"
 )
 
 func HandleRequests(task *ScaffoldingRunTask) {
 	r := mux.NewRouter()
 
 	task.logger.Println("Registering " + task.config.Path + " route")
-	r.HandleFunc(task.config.Path, HandleTFCRequestWrapper(task, SendTFCCallbackResponse())).Methods(http.MethodPost)
+	r.HandleFunc(task.config.Path, handleTFCRequestWrapper(task, sendTFCCallbackResponse())).Methods(http.MethodPost)
 
 	task.logger.Println("Registering /healthcheck route")
 	r.HandleFunc("/healthcheck", func(w http.ResponseWriter, r *http.Request) {
@@ -41,7 +41,7 @@ func HandleRequests(task *ScaffoldingRunTask) {
 	}
 }
 
-func HandleTFCRequestWrapper(task *ScaffoldingRunTask, original func(http.ResponseWriter, *http.Request, api.Request, *ScaffoldingRunTask, *handler.CallbackBuilder)) func(http.ResponseWriter, *http.Request) {
+func handleTFCRequestWrapper(task *ScaffoldingRunTask, original func(http.ResponseWriter, *http.Request, api.Request, *ScaffoldingRunTask, *handler.CallbackBuilder)) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		task.logger.Println(task.config.Path + " called")
 
@@ -114,7 +114,7 @@ func HandleTFCRequestWrapper(task *ScaffoldingRunTask, original func(http.Respon
 
 		// Get TFC Plan if the task is running in the post-plan or pre-apply stages
 		if runTaskReq.Stage == api.PostPlan || runTaskReq.Stage == api.PreApply {
-			plan, err := RetrieveTFCPlan(runTaskReq)
+			plan, err := retrieveTFCPlan(runTaskReq)
 
 			if err != nil {
 				task.logger.Println("Error occurred while retrieving plan from TFC")
@@ -135,7 +135,7 @@ func HandleTFCRequestWrapper(task *ScaffoldingRunTask, original func(http.Respon
 	}
 }
 
-func SendTFCCallbackResponse() func(w http.ResponseWriter, r *http.Request, reqBody api.Request, task *ScaffoldingRunTask, cbBuilder *handler.CallbackBuilder) {
+func sendTFCCallbackResponse() func(w http.ResponseWriter, r *http.Request, reqBody api.Request, task *ScaffoldingRunTask, cbBuilder *handler.CallbackBuilder) {
 
 	return func(w http.ResponseWriter, r *http.Request, reqBody api.Request, task *ScaffoldingRunTask, cbBuilder *handler.CallbackBuilder) {
 
@@ -147,7 +147,7 @@ func SendTFCCallbackResponse() func(w http.ResponseWriter, r *http.Request, reqB
 		}
 
 		// Send PATCH callback response to TFC
-		request, err := SendTFCRequest(reqBody.TaskResultCallbackURL, http.MethodPatch, reqBody.AccessToken, respBody)
+		request, err := sendTFCRequest(reqBody.TaskResultCallbackURL, http.MethodPatch, reqBody.AccessToken, respBody)
 		if request != nil {
 			_ = r.Body.Close()
 		}
@@ -162,10 +162,10 @@ func SendTFCCallbackResponse() func(w http.ResponseWriter, r *http.Request, reqB
 
 }
 
-func RetrieveTFCPlan(req api.Request) (tfjson.Plan, error) {
+func retrieveTFCPlan(req api.Request) (tfjson.Plan, error) {
 
 	// Call TFC to get plan
-	resp, err := SendTFCRequest(req.PlanJSONAPIURL, "GET", req.AccessToken, nil)
+	resp, err := sendTFCRequest(req.PlanJSONAPIURL, "GET", req.AccessToken, nil)
 	if err != nil {
 		return tfjson.Plan{}, err
 	}
@@ -193,7 +193,7 @@ func RetrieveTFCPlan(req api.Request) (tfjson.Plan, error) {
 	return tfPlan, nil
 }
 
-func SendTFCRequest(url string, method string, accessToken string, body []byte) (*http.Response, error) {
+func sendTFCRequest(url string, method string, accessToken string, body []byte) (*http.Response, error) {
 	req, err := http.NewRequest(method, url, bytes.NewReader(body))
 	if err != nil {
 		fmt.Printf("client: could not create request: %s\n", err)
