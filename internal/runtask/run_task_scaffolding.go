@@ -17,7 +17,7 @@ import (
 const (
 	// DefaultBind is the port the run task HTTP server will run on.
 	DefaultBind = ":22180"
-	// DefaultPath is the URL path for the run task to receive HTTP request from TFC or TFE,
+	// DefaultPath is the URL path for the run task to receive HTTP request from TFC or TFE.
 	DefaultPath = "/runtask"
 	// HMACKey is the customizable secret which TFC or TFE will use to sign requests to the run task.
 	HMACKey = "secret123"
