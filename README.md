@@ -35,7 +35,7 @@ _We highly recommend using a tunneling solution like [ngrok](https://ngrok.com/)
 3. Verify that the run task service is running by calling the `/healthcheck` endpoint: 
 
     ```shell
-    curl -v -d '{...}' -H "Content-Type: application/json" <Service URL>/healthcheck
+    curl -v -H "Content-Type: application/json" <Service URL>/healthcheck
     ```
 
 5. Follow the steps on the Hashicorp Developer platform for [Creating a Run Task](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-tasks#creating-a-run-task) and [Associating Run Tasks with a Workspace](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-tasks#associating-run-tasks-with-a-workspace)
