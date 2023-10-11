@@ -47,5 +47,5 @@ jobs:
           go-version-file: 'go.mod'
           cache: true
       - run: go mod download
-      - run: go test -v -cover ./internal/runtask/
+      - run: go test -v -cover ./...
         timeout-minutes: 10

@@ -16,7 +16,8 @@ Please see the [GitHub template repository documentation](https://help.github.co
   - To create a run task, you must have a user account with the [Manage Run Tasks](https://developer.hashicorp.com/terraform/cloud-docs/users-teams-organizations/permissions#manage-run-tasks) permission. To associate run tasks with a workspace, you need the [Manage Workspace Run Tasks](https://developer.hashicorp.com/terraform/cloud-docs/users-teams-organizations/permissions#general-workspace-permissions) permission on that particular workspace.
 - [Go](https://golang.org/doc/install) >= 1.20
 
-## Using The Run Task in TFC/E
+## Using The Run Task in TFC or TFE
+
 _We highly recommend using a tunneling solution like [ngrok](https://ngrok.com/) to quickly test your run task on your local machine._
 
 1. Run the run task service using the Go `run` command:
