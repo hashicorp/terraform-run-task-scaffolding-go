@@ -3,7 +3,7 @@ module github.com/hashicorp/terraform-run-task-scaffolding-go
 go 1.20
 
 require (
-	github.com/gorilla/mux v1.8.0
+	github.com/gorilla/mux v1.8.1
 	github.com/hashicorp/terraform-json v0.17.1
 )
 
