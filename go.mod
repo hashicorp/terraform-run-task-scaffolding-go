@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/gorilla/mux v1.8.1
-	github.com/hashicorp/terraform-json v0.18.0
+	github.com/hashicorp/terraform-json v0.19.0
 )
 
 require (
