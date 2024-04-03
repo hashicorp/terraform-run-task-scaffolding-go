@@ -23,7 +23,7 @@ const (
 	PrePlan   string = "pre_plan"
 	PostPlan  string = "post_plan"
 	PreApply  string = "pre_apply"
-	PostApply string = "pre_apply"
+	PostApply string = "post_apply"
 )
 
 type Request struct {
