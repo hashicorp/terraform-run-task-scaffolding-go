@@ -4,6 +4,7 @@
 package runtask
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -14,15 +15,6 @@ import (
 	"github.com/hashicorp/terraform-run-task-scaffolding-go/internal/sdk/handler"
 )
 
-const (
-	// DefaultBind is the port the run task HTTP server will run on.
-	DefaultBind = ":22180"
-	// DefaultPath is the URL path for the run task to receive HTTP request from TFC or TFE.
-	DefaultPath = "/runtask"
-	// HMACKey is the customizable secret which TFC or TFE will use to sign requests to the run task.
-	HMACKey = "secret123"
-)
-
 // ScaffoldingRunTask defines the run task implementation.
 type ScaffoldingRunTask struct {
 	config handler.Configuration
@@ -31,11 +23,11 @@ type ScaffoldingRunTask struct {
 
 // Configure defines the configuration for the server and run task.
 // This method is called before the server is initialized.
-func (r *ScaffoldingRunTask) Configure() {
+func (r *ScaffoldingRunTask) Configure(addr string, path string, hmacKey string) {
 	r.config = handler.Configuration{
-		Addr:    DefaultBind,
-		Path:    DefaultPath,
-		HmacKey: HMACKey,
+		Addr:    fmt.Sprintf(":%s", addr),
+		Path:    path,
+		HmacKey: hmacKey,
 	}
 }
 
@@ -44,10 +36,6 @@ func (r *ScaffoldingRunTask) Configure() {
 func (r *ScaffoldingRunTask) VerifyRequest(request api.Request) (*handler.CallbackBuilder, error) {
 
 	// Run custom verification logic
-	//if request.OrganizationName != "TFC-ORG" {
-	//	return handler.NewCallbackBuilder(api.TaskFailed).WithMessage("Unexpected Org Name")
-	//}
-
 	r.logger.Println("Successfully verified request")
 	return handler.NewCallbackBuilder(api.TaskPassed).WithMessage("Custom Passed Message"), nil
 }
@@ -56,7 +44,8 @@ func (r *ScaffoldingRunTask) VerifyRequest(request api.Request) (*handler.Callba
 // This method is only called if the run task is running in the post-plan or pre-apply stages
 // and if VerifyRequest returns a nil response with no error.
 func (r *ScaffoldingRunTask) VerifyPlan(request api.Request, plan tfjson.Plan) (*handler.CallbackBuilder, error) {
-	return nil, nil
+	r.logger.Println("Successfully verified plan")
+	return handler.NewCallbackBuilder(api.TaskPassed).WithMessage("Custom Passed Message"), nil
 }
 
 // NewRunTask instantiates a new ScaffoldingRunTask with a new Logger.
