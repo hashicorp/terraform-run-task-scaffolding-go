@@ -105,13 +105,6 @@ func handleTFCRequestWrapper(task *ScaffoldingRunTask, original func(http.Respon
 			return
 		}
 
-		// Send response to TFC and exit early
-		if callbackResp != nil {
-			task.logger.Println("Error occurred while parsing the request")
-			original(w, r, runTaskReq, task, callbackResp)
-			return
-		}
-
 		// Get TFC Plan if the task is running in the post-plan or pre-apply stages
 		if runTaskReq.Stage == api.PostPlan || runTaskReq.Stage == api.PreApply {
 			plan, err := retrieveTFCPlan(runTaskReq)
